@@ -1,0 +1,108 @@
+<html>
+
+<head>
+
+    <title>Bus Stop Config</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" integrity="sha256-B5Af7a59HZfTwOlorb6pQSEj6l8I3jj785fgpPiLnx4="  crossorigin="anonymous">
+
+    <link rel="stylesheet" href="src/bus_stop_chooser.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" integrity="sha256-CX9/BWJ5F1oC8mbqO5CMChjvkuoBQF8FTujU6xO5eB0="  crossorigin="anonymous"></script>
+
+    <script src="src/bus_stop_chooser.js"></script>
+
+    <script>
+
+        var current_stops = [
+          {
+            "id": "0500CCITY002",
+            "stop_id": "0500CCITY002",
+            "atco_code": "0500CCITY002",
+            "naptan_code": "CMBDADAG",
+            "common_name": "Great St Mary's Church",
+            "indicator": "near",
+            "locality_name": "Cambridge",
+            "longitude": 0.11798986495,
+            "latitude": 52.2056312981
+          },
+          {
+            "id": "0500SCAMB020",
+            "stop_id": "0500SCAMB020",
+            "atco_code": "0500SCAMB020",
+            "naptan_code": "CMBGMGWM",
+            "common_name": "Play Area",
+            "indicator": "near",
+            "locality_name": "Upper Cambourne",
+            "longitude": -0.0607340131,
+            "latitude": 52.2198629227
+          },
+          {
+            "id": "0500CCITY111",
+            "stop_id": "0500CCITY111",
+            "atco_code": "0500CCITY111",
+            "naptan_code": "CMBDAJDM",
+            "common_name": "Christ's College",
+            "indicator": "opp",
+            "locality_name": "Cambridge",
+            "longitude": 0.12152333326,
+            "latitude": 52.2063770821
+          },
+          {
+            "id": "0500CCITY440",
+            "stop_id": "0500CCITY440",
+            "atco_code": "0500CCITY440",
+            "naptan_code": "CMBDGDTP",
+            "common_name": "Bene't Street",
+            "indicator": "opp",
+            "locality_name": "Cambridge",
+            "longitude": 0.11902718402,
+            "latitude": 52.2043627963
+          }
+        ];
+
+        var chooser1 = BusStopChooser.create({multi_select: true});
+        var chooser2 = BusStopChooser.create({});
+
+        $().ready(function () {
+
+            chooser1.render("chooser1",current_stops);
+            $('#save1').click(function() {
+                var data = JSON.stringify(chooser1.getData(), null, 2);
+                console.log("Retrieving data", data);
+                $("#results1").text(data);
+            });
+
+            chooser2.render("chooser2");
+            $('#save2').click(function() {
+                var data = JSON.stringify(chooser2.getData(), null, 2);
+                console.log("Retrieving data", data);
+                $("#results2").text(data);
+            });
+
+        });
+
+    </script>
+
+</head>
+
+<body >
+
+    <div id="chooser1" style="height: 500px; width: 500px; border: 1px solid black;"></div>
+
+    <button id="save1" name="button">Save</button>
+
+    <pre id="results1">None</pre>
+
+    <div id="chooser2" style="height: 500px; width: 500px; border: 1px solid black;"></div>
+
+    <button id="save2" name="button">Save</button>
+
+    <pre id="results2">None</pre>
+
+
+</body>
+
+</html>
