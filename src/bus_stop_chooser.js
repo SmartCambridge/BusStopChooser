@@ -6,7 +6,7 @@ var BusStopChooser = (function() {
 
     'use strict';
 
-    // TODO: Move to smartcambridge.org ehrn available there
+    // TODO: Move to smartcambridge.org when available there (#1)
     var STOPS_API_ENDPOINT = 'http://tfc-app4.cl.cam.ac.uk/transport/api/stops';
 
     var OSM_TILES = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -88,7 +88,6 @@ var BusStopChooser = (function() {
             warning_div.className = 'bus_stop_chooser_warning';
             warning_div.style.display = 'none';
 
-            // TODO: put the image into the CSS
             var spinner_img = document.createElement('div');
             spinner_img.className = 'bus_stop_chooser_spinner';
             spinner_img.style.display = 'none';
