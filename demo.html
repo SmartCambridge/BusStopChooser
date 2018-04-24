@@ -63,19 +63,19 @@
           }
         ];
 
-        var chooser1 = BusStopChooser.create({multi_select: true});
-        var chooser2 = BusStopChooser.create({});
+        var chooser1 = BusStopChooser.create({});
+        var chooser2 = BusStopChooser.create({multi_select: true});
 
         $().ready(function () {
 
-            chooser1.render("chooser1",current_stops);
+            chooser1.render("chooser1");
             $('#save1').click(function() {
                 var data = JSON.stringify(chooser1.getData(), null, 2);
                 console.log("Retrieving data", data);
                 $("#results1").text(data);
             });
 
-            chooser2.render("chooser2");
+            chooser2.render("chooser2",current_stops);
             $('#save2').click(function() {
                 var data = JSON.stringify(chooser2.getData(), null, 2);
                 console.log("Retrieving data", data);

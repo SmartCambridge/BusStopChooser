@@ -93,11 +93,28 @@ var BusStopChooser = (function() {
             spinner_img.style.display = 'none';
 
 
-            function render(container, current) {
+            function render(id, current_stops) {
                 // Draw chooser into container and let the user interact with it
+                var container = id;
+                var current;
+                if (current_stops) {
+                    var current = current_stops.slice();
+                }
 
                 if (typeof container === 'string') {
                     container = document.getElementById(container);
+                }
+
+                // Catch some annoying problems
+                debug_log("width", container.clientWidth, "height", container.clientHeight, (container.clientHeight));
+                if ((container.clientWidth < 10) || (container.clientHeight < 10)) {
+                    console.warn("BusStopChooser container has small or zero height or width so may not display");
+                }
+                debug_log("multi_select", multi_select, "current", current);
+                if ((!multi_select) && current && current.length > 1) {
+                    console.warn("BusStopChooser got multiple current stops with multi_select=false");
+                    console.warn("BusStopChooser using only the first current stop");
+                    current.splice(1);
                 }
 
                 container.append(map_div);
