@@ -1,8 +1,8 @@
 Bus Stop Chooser
 ================
 
-An JavaScript input widget for selecting bus stops, using the Smart Cambridge
-bus stop API (itself based on data from NaPTAN) and [Leaflet](http://leafletjs.com/).
+An JavaScript input widget for selecting bus stops, using the [Smart Cambridge
+bus stop API](http://smartcambridge.org/transport/api/docs/#stops-list) (itself based on data from [NaPTAN](https://data.gov.uk/dataset/ff93ffc1-6656-47d8-9155-85ea0b8f2251/national-public-transport-access-nodes-naptan)) and [Leaflet](http://leafletjs.com/).
 
 This code has essentially no error checking, so if you call it in ways it's not expecting it is likely to respond with exciting error messages (or not respond at all).
 
