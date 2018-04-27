@@ -256,34 +256,38 @@ var BusStopChooser = (function() {
                 // Add new stops, remove any too far off the map
 
                 debug_log("Processing", stops.length, "stops, selected", add_selected);
-                var seen_atco_codes = [];
+                var seen_stop_ids = [];
 
-                // Get all the atco_codes we already know about
-                var displayed_atco_codes = [];
+                // Get all the stop_ids we already know about
+                var displayed_stop_ids = [];
                 selected_stops.eachLayer(function(marker) {
-                    displayed_atco_codes.push(marker.properties.stop.atco_code);
+                    displayed_stop_ids.push(marker.properties.stop.stop_id);
                 });
                 other_stops.eachLayer(function(marker) {
-                    displayed_atco_codes.push(marker.properties.stop.atco_code);
+                    displayed_stop_ids.push(marker.properties.stop.stop_id);
                 });
-                debug_log("Currently displaying", displayed_atco_codes);
+                debug_log("Currently displaying", displayed_stop_ids);
 
                 // Add markers for stops we aren't currently displaying
                 for (var ctr = 0; ctr < stops.length; ctr++) {
 
                     var stop = stops[ctr];
-                    debug_log("Processing", stop.atco_code);
-                    seen_atco_codes.push(stop.atco_code);
+                    debug_log("Processing", stop.stop_id);
+                    seen_stop_ids.push(stop.stop_id);
 
                     // Ignore it if it's already displayed
-                    if (displayed_atco_codes.indexOf(stop.atco_code) !== -1) {
-                        debug_log("Stop", stop.atco_code, "already displayed - ignoring");
+                    if (displayed_stop_ids.indexOf(stop.stop_id) !== -1) {
+                        debug_log("Stop", stop.stop_id, "already displayed - ignoring");
                         continue;
                     }
 
-                    debug_log("Adding", stop.atco_code);
-                    var marker = L.marker([stop.latitude, stop.longitude])
-                      .bindTooltip(stop.atco_code + ': ' + stop.common_name)
+                    //Add 'lng' and 'lat' aliases pending addition to API
+                    if (!stop.hasOwnProperty('lng')) stop.lng = stop.longitude;
+                    if (!stop.hasOwnProperty('lat')) stop.lat = stop.latitude;
+
+                    debug_log("Adding", stop.stop_id);
+                    var marker = L.marker([stop.lat, stop.lng])
+                      .bindTooltip(stop.stop_id + ': ' + stop.common_name)
                       .on('click', process_stop_click);
                     marker.properties = { 'stop': stop };
                     if (add_selected) {
@@ -296,10 +300,10 @@ var BusStopChooser = (function() {
                 }
 
                 // Delete anything we are displaying that we didn't see
-                debug_log("seen_atco_codes", seen_atco_codes);
+                debug_log("seen_stop_ids", seen_stop_ids);
                 other_stops.eachLayer(function(marker) {
-                    if (seen_atco_codes.indexOf(marker.properties.stop.atco_code) === -1) {
-                        debug_log("Removing", marker.properties.stop.atco_code);
+                    if (seen_stop_ids.indexOf(marker.properties.stop.stop_id) === -1) {
+                        debug_log("Removing", marker.properties.stop.stop_id);
                         other_stops.removeLayer(marker);
                     }
                 });
@@ -356,10 +360,10 @@ var BusStopChooser = (function() {
             }
 
             function list_selected_stops() {
-                // Return the atco_codes of currently selected stops
+                // Return the stop_ids of currently selected stops
                 var codes = [];
                 selected_stops.eachLayer(function(marker) {
-                    codes.push(marker.properties.stop.atco_code);
+                    codes.push(marker.properties.stop.stop_id);
                 });
                 return codes;
             }

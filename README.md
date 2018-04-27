@@ -66,9 +66,9 @@ containing a (possibly empty) list of bus stops.
 ```json
 {
   "map": {
-    "lng": 0.030394660080013132,
-    "lat": 52.21211418451629,
-    "zoom": 11
+    "lng": 0.13309121131896975,
+    "lat": 52.19267312526965,
+    "zoom": 10
   },
   "stops": [
     {
@@ -80,7 +80,9 @@ containing a (possibly empty) list of bus stops.
       "indicator": "near",
       "locality_name": "Cambridge",
       "longitude": 0.11798986495,
-      "latitude": 52.2056312981
+      "latitude": 52.2056312981,
+      "lng": 0.11798986495,
+      "lat": 52.2056312981
     },
     ...
   ]
@@ -89,6 +91,6 @@ containing a (possibly empty) list of bus stops.
 
 Stops, both in the returned data and in `default_data` are represented by
 an object containing location and other data about the stop derived directly
-from the API. To be usable as `default_data`, a stop must have at least
-`atco_code`, `longitude`, and `latitude` keys.
+from the API. To be usable in `current.stops`, a stop must have at least
+`stop_id`, `lng`, and `lat` properties.
 
