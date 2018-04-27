@@ -15,11 +15,13 @@ Include [Leaflet](http://leafletjs.com/) and the widget's JavaScript and CSS:
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
 integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
 crossorigin=""/>
+
 <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
 integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
 crossorigin=""></script>
 
 <link rel="stylesheet" href="bus_stop_chooser.css"/>
+
 <script src="bus_stop_chooser.js"></script>
 ```
 
@@ -34,19 +36,22 @@ the widget:
 
 Option|Description
 ------| -------
-`lat`, `lng`, `zoom` | Centre and zoom level of the initial map display. Not used if `default_data` is supplied (see below), in which case the map is scaled and centred to show the existing stops. Defaults to Cambridge City Centre
-`multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. With `multi_select=false` any `default_data` passed to `render()` should be a list containing at most one stop, and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
+`lat`, `lng`, `zoom` | Default centre and zoom level of the initial map display. Ignored if `current.map` or `current.stops` are supplied to `render()` (see below), in which case the map is scaled and centred either based on `current.map` or to a box containing all `current.stops`. Defaults to Cambridge City Centre
+`multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. With `multi_select=false` any `current.stops` passed to `render()` should be a list containing at most one stop, and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
 `zoom_threshold` | The zoom level below which un-selected stops will be hidden to avoid slowing down map rendering. Default 15.
 
 Then render it into a DOM object (e.g. a \<div\>)
 
 ```javascript
-chooser.render(container, [default_data]);
+chooser.render(container, [current]);
 ```
 
 where `container` is a the DOM object into which the chooser will be
-rendered, or the string ID of the object. Make sure the container has a defined height, for example by setting it in CSS. `default_data`, if provided, contains
-a list of existing stops to be edited.
+rendered, or the string ID of the object. Make sure the container has a
+defined height, for example by setting it in CSS. `current`, if provided,
+can contain the centre and zoom level of the map to display and/or a
+list of existing stops to be edited in the format returned by
+`getData()` (see below).
 
 Subsequently, call
 
@@ -54,7 +59,7 @@ Subsequently, call
 data = chooser.getData()
 ```
 
-to retrieve the chosen stops. The returned data is an object with keys
+to retrieve the chosen stops. The returned data is an object with properties
 `map`, giving the final centre and zoom of the displayed map, and `stops`
 containing a (possibly empty) list of bus stops.
 

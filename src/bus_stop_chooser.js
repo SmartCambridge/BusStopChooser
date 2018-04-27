@@ -93,12 +93,12 @@ var BusStopChooser = (function() {
             spinner_img.style.display = 'none';
 
 
-            function render(id, current_stops) {
+            function render(id, current) {
                 // Draw chooser into container and let the user interact with it
                 var container = id;
-                var current;
-                if (current_stops) {
-                    var current = current_stops.slice();
+                var current_stops = [];
+                if (current && current.stops) {
+                    current_stops = current.stops.slice();
                 }
 
                 if (typeof container === 'string') {
@@ -108,13 +108,13 @@ var BusStopChooser = (function() {
                 // Catch some annoying problems
                 debug_log("width", container.clientWidth, "height", container.clientHeight, (container.clientHeight));
                 if ((container.clientWidth < 10) || (container.clientHeight < 10)) {
-                    console.warn("BusStopChooser container has small or zero height or width so may not display");
+                    console.warn("BusStopChooser: container has small or zero height or width so may not display");
                 }
-                debug_log("multi_select", multi_select, "current", current);
-                if ((!multi_select) && current && current.length > 1) {
-                    console.warn("BusStopChooser got multiple current stops with multi_select=false");
-                    console.warn("BusStopChooser using only the first current stop");
-                    current.splice(1);
+                debug_log("multi_select", multi_select, "current stops", current_stops);
+                if ((!multi_select) && current_stops && current_stops.length > 1) {
+                    console.warn("BusStopChooser: got multiple current stops with multi_select=false");
+                    console.warn("BusStopChooser: using only the first current stop");
+                    current_stops.splice(1);
                 }
 
                 container.append(map_div);
@@ -125,14 +125,25 @@ var BusStopChooser = (function() {
                 selected_stops.addTo(map);
                 other_stops.addTo(map);
 
-                if (current && current.length > 0) {
-                    debug_log("Got", current.length, "Initial stops");
-                    add_stops(current, true);
+                // Add any current stops
+                if (current_stops.length > 0) {
+                    debug_log("Got", current_stops.length, "Initial stops");
+                    add_stops(current_stops, true);
+                }
+
+                // Set initial view from current.map, else current.stops, else params
+                if (current && current.map ) {
+                    debug_log("Setting view from current.map");
+                    map.setView([current.map.lat, current.map.lng],
+                                 current.map.zoom);
+                }
+                else if (selected_stops.getLayers().length > 0) {
+                    debug_log("Setting view from current.stops");
                     var bounds = selected_stops.getBounds().pad(0.2);
                     map.fitBounds(bounds);
                 }
                 else {
-                    debug_log("No initial stops");
+                    debug_log("Setting view from parameters or default");
                     map.setView([lat, lng], zoom);
                 }
 

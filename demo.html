@@ -16,7 +16,7 @@
 
     <script>
 
-        var current_stops = [
+        var stops = [
           {
             "id": "0500CCITY002",
             "stop_id": "0500CCITY002",
@@ -63,6 +63,12 @@
           }
         ];
 
+        var map = {
+          "lng": 0.13309121131896975,
+          "lat": 52.19267312526965,
+          "zoom": 10
+        };
+
         var chooser1 = BusStopChooser.create({});
         var chooser2 = BusStopChooser.create({multi_select: true});
 
@@ -75,7 +81,7 @@
                 $("#results1").text(data);
             });
 
-            chooser2.render("chooser2",current_stops);
+            chooser2.render("chooser2", { map: map, stops: stops });
             $('#save2').click(function() {
                 var data = JSON.stringify(chooser2.getData(), null, 2);
                 console.log("Retrieving data", data);
