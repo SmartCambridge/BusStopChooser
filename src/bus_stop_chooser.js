@@ -6,8 +6,7 @@ var BusStopChooser = (function() {
 
     'use strict';
 
-    // TODO: Move to smartcambridge.org when available there (#1)
-    var DEFAULT_ENDPOINT = 'http://tfc-app4.cl.cam.ac.uk/transport/api';
+    var DEFAULT_ENDPOINT = 'https://smartcambridge.org/transport/api';
 
     var OSM_TILES = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var OSM_MAX_ZOOM = 19;
@@ -80,11 +79,6 @@ var BusStopChooser = (function() {
             var selected_stops = L.featureGroup();
             var other_stops = L.featureGroup();
 
-            var map_div = document.createElement('div');
-            map_div.style.height = "100%";
-            map_div.style.width = "100%";
-            map_div.style.position = "relative";
-
             var warning_div = document.createElement('div');
             warning_div.className = 'bus_stop_chooser_warning';
             warning_div.style.display = 'none';
@@ -94,22 +88,22 @@ var BusStopChooser = (function() {
             spinner_img.style.display = 'none';
 
 
-            function render(id, current) {
-                // Draw chooser into container and let the user interact with it
-                var container = id;
+            function render(raw_parent_el, current) {
+
+                var parent_el = raw_parent_el;
+                if (typeof parent_el === 'string') {
+                    parent_el = document.getElementById(parent_el);
+                }
+
                 var current_stops = [];
                 if (current && current.stops) {
                     current_stops = current.stops.slice();
                 }
 
-                if (typeof container === 'string') {
-                    container = document.getElementById(container);
-                }
-
                 // Catch some annoying problems
-                debug_log("width", container.clientWidth, "height", container.clientHeight, (container.clientHeight));
-                if ((container.clientWidth < 10) || (container.clientHeight < 10)) {
-                    console.warn("BusStopChooser: container has small or zero height or width so may not display");
+                debug_log("width", parent_el.clientWidth, "height", parent_el.clientHeight, (parent_el.clientHeight));
+                if ((parent_el.clientWidth < 10) || (parent_el.clientHeight < 10)) {
+                    console.warn("BusStopChooser: parent_el has small or zero height or width so may not display");
                 }
                 debug_log("multi_select", multi_select, "current stops", current_stops);
                 if ((!multi_select) && current_stops && current_stops.length > 1) {
@@ -118,11 +112,10 @@ var BusStopChooser = (function() {
                     current_stops.splice(1);
                 }
 
-                container.append(map_div);
-                map_div.append(warning_div);
-                map_div.append(spinner_img);
+                parent_el.appendChild(warning_div);
+                parent_el.appendChild(spinner_img);
 
-                map = new L.Map(container).addLayer(osm);
+                map = new L.Map(parent_el).addLayer(osm);
                 selected_stops.addTo(map);
                 other_stops.addTo(map);
 
@@ -140,8 +133,8 @@ var BusStopChooser = (function() {
                 }
                 else if (selected_stops.getLayers().length > 0) {
                     debug_log("Setting view from current.stops");
-                    var bounds = selected_stops.getBounds().pad(0.2);
-                    map.fitBounds(bounds);
+                    var bounds = selected_stops.getBounds().pad(0.2); // LatLngBounds
+                    map.fitBounds(bounds, { maxZoom: zoom_threshold }); // draw map around current.stops, with max zoom applied.
                 }
                 else {
                     debug_log("Setting view from parameters or default");
@@ -378,6 +371,8 @@ var BusStopChooser = (function() {
             return {
                 render: render,
                 getData: getData,
+                valid: function () { return true; },
+                value: getData
             };
 
         }

@@ -89,7 +89,7 @@
                 $("#results1").text(data);
             });
 
-            chooser2.render("chooser2", { map: map, stops: stops });
+            chooser2.render(document.getElementById("chooser2"), { map: map, stops: stops });
             $('#save2').click(function() {
                 var data = JSON.stringify(chooser2.getData(), null, 2);
                 console.log("Retrieving data", data);

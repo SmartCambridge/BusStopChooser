@@ -36,20 +36,20 @@ the widget:
 
 Option|Description
 ------| -------
-`api_endpoint` | The base URL of the API to use. Default `http://tfc-app4.cl.cam.ac.uk/transport/api` (will change to `https://smartcambridge.org/transport/api` when the API is actually released)
+`api_endpoint` | The base URL of the API to use. Default `https://smartcambridge.org/transport/api`.
 `lat`, `lng`, `zoom` | Default centre and zoom level of the initial map display. Ignored if `current.map` or `current.stops` are supplied to `render()` (see below), in which case the map is scaled and centred either based on `current.map` or to a box containing all `current.stops`. Defaults to Cambridge City Centre
-`multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. With `multi_select=false` any `current.stops` passed to `render()` should be a list containing at most one stop, and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
+`multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. Even with `multi_select=false`, `current.stops` passed to `render()` should be a list (containing at most one stop), and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
 `zoom_threshold` | The zoom level below which un-selected stops will be hidden to avoid slowing down map rendering. Default 15.
 
 Then render it into a DOM object (e.g. a \<div\>)
 
 ```javascript
-chooser.render(container, [current]);
+chooser.render(parent_el, [current]);
 ```
 
-where `container` is a the DOM object into which the chooser will be
-rendered, or the string ID of the object. Make sure the container has a
-defined height, for example by setting it in CSS. `current`, if provided,
+where `parent_el` is a the DOM object into which the chooser will be
+rendered, or the string ID of the object. Make sure the object has a
+defined height and width, for example by setting it in CSS. `current`, if provided,
 can contain the centre and zoom level of the map to display and/or a
 list of existing stops to be edited in the format returned by
 `getData()` (see below).
@@ -95,3 +95,5 @@ an object containing location and other data about the stop derived directly
 from the API. To be usable in `current.stops`, a stop must have at least
 `stop_id`, `lng`, and `lat` properties.
 
+`choser.value()` is an alias for `chooser.getData()`. `chooser.valid()` is a stub
+routine that curently always returns `True`.
