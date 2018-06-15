@@ -1,0 +1,26 @@
+{
+  "name": "bus-stop-chooser",
+  "version": "1.0.0",
+  "description": "Bus Stop Chooser ================",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint . --ext .json --ext .md",
+    "pretest": "npm run lint",
+    "test": "echo \"No tests\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SmartCambridge/BusStopChooser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SmartCambridge/BusStopChooser/issues"
+  },
+  "homepage": "https://github.com/SmartCambridge/BusStopChooser#readme",
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-markdown": "^1.0.0-beta.6"
+  }
+}
