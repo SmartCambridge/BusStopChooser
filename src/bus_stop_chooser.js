@@ -6,7 +6,7 @@ var BusStopChooser = (function() {
 
     'use strict';
 
-    var DEFAULT_ENDPOINT = 'https://smartcambridge.org/transport/api';
+    var DEFAULT_ENDPOINT = 'https://smartcambridge.org/api/v1/';
 
     var OSM_TILES = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var OSM_MAX_ZOOM = 19;
@@ -69,6 +69,7 @@ var BusStopChooser = (function() {
             var multi_select = params.multi_select || false;
             var zoom_threshold = params.zoom_threshold || 15;
             var api_endpoint = params.api_endpoint || DEFAULT_ENDPOINT;
+            var api_token = params.api_token;
 
             var map;
             var osm = new L.TileLayer(OSM_TILES,
@@ -214,7 +215,7 @@ var BusStopChooser = (function() {
                     var bounds = map.getBounds().pad(0.7).toBBoxString();
                     var qs = '?bounding_box=' + encodeURIComponent(bounds);
                     qs += '&page_size='+encodeURIComponent(50);
-                    uri = api_endpoint + '/stops' + qs;
+                    uri = api_endpoint + 'transport/stops' + qs;
                 }
                 if (!new_stops) {
                     new_stops = [];
@@ -222,6 +223,9 @@ var BusStopChooser = (function() {
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', uri, true);
+                if (api_token) {
+                    xhr.setRequestHeader('Authorization', 'Token ' + api_token);
+                }
                 xhr.send();
                 xhr.onreadystatechange = function() {
                     if(xhr.readyState === XMLHttpRequest.DONE) {

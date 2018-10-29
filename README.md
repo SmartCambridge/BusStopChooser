@@ -38,7 +38,8 @@ the widget:
 
 Option|Description
 ------| -------
-`api_endpoint` | The base URL of the API to use. Default `https://smartcambridge.org/transport/api`.
+`api_endpoint` | The base URL of the API to use. Default `https://smartcambridge.org/api/v1/`.
+`api_token` | Authorisation token to include in API requests. Default is not to include a token.
 `lat`, `lng`, `zoom` | Default centre and zoom level of the initial map display. Ignored if `current.map` or `current.stops` are supplied to `render()` (see below), in which case the map is scaled and centred either based on `current.map` or to a box containing all `current.stops`. Defaults to Cambridge City Centre
 `multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. Even with `multi_select=false`, `current.stops` passed to `render()` should be a list (containing at most one stop), and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
 `zoom_threshold` | The zoom level below which un-selected stops will be hidden to avoid slowing down map rendering. Default 15.
