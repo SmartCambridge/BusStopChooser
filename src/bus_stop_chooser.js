@@ -16,20 +16,22 @@ var BusStopChooser = (function() {
     var OSM_ATTRIBUTION = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
     'contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>';
 
-    var DEBUG;
+    var DEBUG = true;
 
     var stop_icon = L.divIcon({
         className: 'bus_stop_chooser_stop',
         iconSize: [20, 40],
         iconAnchor: [2, 38],
         tooltipAnchor: [2, -20],
+        popupAnchor: [10, -40],
     });
 
     var stop_icon_selected = L.divIcon({
         className: 'bus_stop_chooser_stop_selected',
         iconSize: [20, 40],
         iconAnchor: [2, 38],
-        tooltipAnchor: [2, -20]
+        tooltipAnchor: [2, -20],
+        popupAnchor: [10, -40],
     });
 
 
@@ -57,6 +59,43 @@ var BusStopChooser = (function() {
     }
 
 
+    function formatted_stop_name(indicator, common_name) {
+
+        // Fix up abbreviations
+        switch (indicator) {
+        case 'opp':
+            indicator = 'opposite';
+            break;
+        case 'o/s':
+            indicator = 'outside';
+            break;
+        case 'adj':
+        case 'adjacent':
+            indicator = 'adjacent to';
+            break;
+        case 'nr':
+            indicator = 'near';
+            break;
+        case 'cnr':
+            indicator = 'corner';
+            break;
+        }
+
+        if (indicator === undefined) {
+            indicator = '';
+        }
+
+        if ( [
+            'opposite', 'outside', 'adjacent to', 'near', 'behind', 'inside', 'by', 'in',
+            'at', 'on', 'before', 'just before', 'after', 'just after', 'corner of'].includes(indicator)) {
+            return indicator.charAt(0).toUpperCase() + indicator.slice(1) + ' ' + common_name;
+        }
+        else {
+            return common_name + ' (' + indicator + ')';
+        }
+    }
+
+
     function debug_log() {
         if (DEBUG) {
             var args = [].slice.call(arguments);
@@ -74,6 +113,7 @@ var BusStopChooser = (function() {
             var lng = params.lng || 0.124;
             var zoom = params.zoom || 15;
             var multi_select = params.multi_select || false;
+            var popups = params.popups || false;
             var zoom_threshold = params.zoom_threshold || 15;
             var api_endpoint = params.api_endpoint || DEFAULT_ENDPOINT;
             var api_token = params.api_token;
@@ -299,8 +339,13 @@ var BusStopChooser = (function() {
 
                     debug_log('Adding', stop.stop_id);
                     var marker = L.marker([stop.lat, stop.lng])
-                        .bindTooltip(stop.stop_id + ': ' + stop.common_name)
                         .on('click', process_stop_click);
+                    if (popups) {
+                        marker.bindPopup(formatted_stop_name(stop.indicator, stop.common_name));
+                    }
+                    else {
+                        marker.bindTooltip(formatted_stop_name(stop.indicator, stop.common_name));
+                    }
                     marker.properties = { 'stop': stop };
                     if (add_selected) {
                         marker.setIcon(stop_icon_selected).addTo(selected_stops);
@@ -361,6 +406,9 @@ var BusStopChooser = (function() {
                 other_stops.removeLayer(marker);
                 marker.addTo(selected_stops);
                 marker.setIcon(stop_icon_selected);
+                if (popups) {
+                    //marker.openPopup();
+                }
                 debug_log('Selected', marker);
             }
 
@@ -368,6 +416,9 @@ var BusStopChooser = (function() {
                 selected_stops.removeLayer(marker);
                 marker.addTo(other_stops);
                 marker.setIcon(stop_icon);
+                if (popups) {
+                    //marker.openPopup();
+                }
                 debug_log('Deselected', marker);
             }
 
@@ -379,6 +430,7 @@ var BusStopChooser = (function() {
                 });
                 return codes;
             }
+
 
             // Return our public methods
             return {
