@@ -4,7 +4,7 @@
   "description": "Bus Stop Chooser ================",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .json --ext .md",
+    "lint": "eslint . --ext .json --ext .md --config .travis-eslint.js",
     "pretest": "npm run lint",
     "test": "echo \"No tests\""
   },

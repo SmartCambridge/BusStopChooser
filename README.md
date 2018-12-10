@@ -61,7 +61,7 @@ list of existing stops to be edited in the format returned by
 Subsequently, call
 
 ```javascript
-data = chooser.getData()
+data = chooser.getData();
 ```
 
 to retrieve the chosen stops. The returned data is an object with properties
