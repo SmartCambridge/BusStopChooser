@@ -2,6 +2,10 @@ module.exports = {
     "env": {
         "browser": true,
     },
+    "plugins": [
+        "json",
+        "markdown"
+    ],
     "extends": "eslint:recommended",
     "rules": {
         "indent": [
