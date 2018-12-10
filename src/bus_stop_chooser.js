@@ -67,6 +67,7 @@ var BusStopChooser = (function() {
             indicator = 'opposite';
             break;
         case 'o/s':
+        case 'os':
             indicator = 'outside';
             break;
         case 'adj':
