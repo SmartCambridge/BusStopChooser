@@ -85,8 +85,16 @@
           "zoom": 10
         };
 
-        var chooser1 = BusStopChooser.create({api_token: TOKEN});
-        var chooser2 = BusStopChooser.create({api_token: TOKEN, multi_select: true, popups: true});
+        var chooser1 = BusStopChooser.create({
+          api_token: TOKEN
+        });
+
+        var chooser2 = BusStopChooser.create({
+          api_token: TOKEN,
+          multi_select: true,
+          popups: true,
+          location: true
+        });
 
         $().ready(function () {
 
