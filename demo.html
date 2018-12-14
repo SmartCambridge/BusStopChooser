@@ -85,6 +85,11 @@
           "zoom": 10
         };
 
+        function show_count(n) {
+          console.log("Stops selected", n);
+          $('#count2').text(n);
+        }
+
         var chooser1 = BusStopChooser.create({
           api_token: TOKEN
         });
@@ -93,7 +98,8 @@
           api_token: TOKEN,
           multi_select: true,
           popups: true,
-          location: true
+          location: true,
+          stops_callback: show_count,
         });
 
         $().ready(function () {
@@ -128,10 +134,11 @@
 
     <div id="chooser2" style="height: 500px; width: 500px; border: 1px solid black;"></div>
 
+    <div>Stops selected: <span id="count2">None</span></div>
+
     <button id="save2" name="button">Save</button>
 
     <pre id="results2">None</pre>
-
 
 </body>
 
