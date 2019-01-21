@@ -16,7 +16,7 @@ var BusStopChooser = (function() {
     var OSM_ATTRIBUTION = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
     'contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>';
 
-    var DEBUG = true;
+    var DEBUG = false;
 
     var stop_icon = L.divIcon({
         className: 'bus_stop_chooser_stop',
