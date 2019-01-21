@@ -130,7 +130,7 @@ var BusStopChooser = (function() {
                 maxZoom: OSM_MAX_ZOOM
             });
             var selected_stops = L.featureGroup();
-            var other_stops = L.featureGroup();
+            var other_stops = L.markerClusterGroup();
 
             var warning_div = document.createElement('div');
             warning_div.className = 'bus_stop_chooser_warning';
