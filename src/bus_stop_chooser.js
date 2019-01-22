@@ -119,9 +119,6 @@ var BusStopChooser = (function() {
             var multi_select = params.multi_select || false;
             var popups = params.popups || false;
             var location = params.location || false;
-            // If onclick_redirect is set to true, uses an alternative on_click event
-            // that will redirect the user to the bus stop web app endpoint.
-            var onclick_redirect = params.onclick_redirect || false;
             var zoom_threshold = params.zoom_threshold || 15;
             var stops_callback = params.stops_callback || undefined;
             var api_endpoint = params.api_endpoint || DEFAULT_ENDPOINT;
@@ -368,7 +365,7 @@ var BusStopChooser = (function() {
 
                     debug_log('Adding', stop.stop_id);
                     var marker = L.marker([stop.lat, stop.lng])
-                        .on('click', onclick_redirect ? process_stop_click_redirect : process_stop_click);
+                        .on('click', process_stop_click);
                     if (popups) {
                         marker.bindPopup(formatted_stop_name(stop.indicator, stop.common_name));
                     } else {
@@ -423,10 +420,6 @@ var BusStopChooser = (function() {
 
             }
 
-
-            function process_stop_click_redirect(e) {
-                window.location.href = '/transport/stop/' + e.target.properties.stop.stop_id;
-            }
 
 
             function select_stop(marker) {
