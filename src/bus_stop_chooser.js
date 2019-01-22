@@ -242,7 +242,6 @@ var BusStopChooser = (function() {
 
             function process_pan_and_zoom(e) {
                 // Handler for pan and zoom ('moveend') events
-
                 debug_log('Processing pan and zoom, arg', e);
                 spinner_img.style.display = 'block';
                 if (map.getZoom() < zoom_threshold) {
@@ -272,7 +271,6 @@ var BusStopChooser = (function() {
                         });
                     }
                 }
-
             }
 
 
@@ -322,6 +320,7 @@ var BusStopChooser = (function() {
                 };
 
             }
+
 
             var safe_get_bus_stops = debounce(get_bus_stops, 750);
 
@@ -405,14 +404,10 @@ var BusStopChooser = (function() {
                         selected = true;
                     }
                 });
-                debug_log('Selected', selected);
 
-                if (selected) {
-                    deselect_stop(clicked_marker);
                 }
-                else {
-                    select_stop(clicked_marker);
-                }
+
+                select_or_deselect_stop(clicked_marker, selected);
 
                 do_stops_callback();
 
@@ -420,33 +415,24 @@ var BusStopChooser = (function() {
 
             }
 
-
-
-            function select_stop(marker) {
-                // First remove anything currently selected if not multi_select
-                // [*should* only ever be one, but who knows?]
-                if (!multi_select) {
-                    selected_stops.eachLayer(function(m) {
-                        deselect_stop(m);
-                    });
+            function select_or_deselect_stop(marker, selected) {
+                if (selected) {
+                    // First remove anything currently selected if not multi_select
+                    // [*should* only ever be one, but who knows?]
+                    if (!multi_select) {
+                        selected_stops.eachLayer(function(m) {
+                            deselect_stop(m);
+                        });
+                    }
+                    other_stops.removeLayer(marker);
+                    marker.addTo(selected_stops);
+                    marker.setIcon(stop_icon_selected);
+                } else {
+                    selected_stops.removeLayer(marker);
+                    marker.addTo(other_stops);
+                    marker.setIcon(stop_icon);
                 }
-                other_stops.removeLayer(marker);
-                marker.addTo(selected_stops);
-                marker.setIcon(stop_icon_selected);
-                if (popups) {
-                    //marker.openPopup();
-                }
-                debug_log('Selected', marker);
-            }
-
-            function deselect_stop(marker) {
-                selected_stops.removeLayer(marker);
-                marker.addTo(other_stops);
-                marker.setIcon(stop_icon);
-                if (popups) {
-                    //marker.openPopup();
-                }
-                debug_log('Deselected', marker);
+                debug_log(selected ? 'Selected' : 'Deselected', marker);
             }
 
             function list_selected_stops() {
