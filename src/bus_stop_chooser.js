@@ -120,6 +120,7 @@ var BusStopChooser = (function() {
             var popups = params.popups || false;
             var location = params.location || false;
             var zoom_threshold = params.zoom_threshold || 15;
+            var on_click_stop_callback = params.on_click_stop_callback || undefined;
             var stops_callback = params.stops_callback || undefined;
             var api_endpoint = params.api_endpoint || DEFAULT_ENDPOINT;
             var api_token = params.api_token;
@@ -407,6 +408,8 @@ var BusStopChooser = (function() {
                     }
                 });
 
+                if (on_click_stop_callback) {
+                    on_click_stop_callback(clicked_marker, selected);
                 }
 
                 select_or_deselect_stop(clicked_marker, selected);
