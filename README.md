@@ -43,9 +43,10 @@ Option|Description
 `lat`, `lng`, `zoom` | Default centre and zoom level of the initial map display. Ignored if `current.map` or `current.stops` are supplied to `render()` (see below), in which case the map is scaled and centred either based on `current.map` or to a box containing all `current.stops`. Defaults to Cambridge City Centre
 `multi_select` | If present and 'true', multiple stops can be selected. If not, it's only possible to select a  single stop. Even with `multi_select=false`, `current.stops` passed to `render()` should be a list (containing at most one stop), and `getData()` still returns a list of stops (which will have at most one element). Defaults to `false`.
 `zoom_threshold` | The zoom level below which un-selected stops will be hidden to avoid slowing down map rendering. Default 15.
+`on_click_stop_callback` | Function. If present and defined, the function will be called every time a bus stop is clicked. It will be called with two arguments, first the marker corresponding to the bus stop that has been clicked, and secondly a boolean indicating if the action was to select (true) or deselect(false) the bus stop.
 `popups` | If present and 'true', suppress the tooltips that are normally shown when hovering over a stop and instead show a popup containing the stop's name when it is clicked.
-`location`: If present and 'true', include a button that will zoom the map so that it's centered on current position, providing the browser can do geolocation.
-`stops_callback`: Function. If present and defined, the function will be called once when the chooser is first rendered and once each time a bus stop is selected or de-selected. It will be called with a single argument which is the total number of currently selected stops.
+`location` | If present and 'true', include a button that will zoom the map so that it's centered on current position, providing the browser can do geolocation.
+`stops_callback` | Function. If present and defined, the function will be called when the chooser is first rendered and once each time a bus stop is selected or de-selected. It will be called with a single argument which is the total number of currently selected stops.
 
 Then render it into a DOM object (e.g. a \<div\>)
 

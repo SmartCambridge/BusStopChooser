@@ -16,7 +16,7 @@ var BusStopChooser = (function() {
     var OSM_ATTRIBUTION = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> ' +
     'contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a></a>';
 
-    var DEBUG = true;
+    var DEBUG = false;
 
     var stop_icon = L.divIcon({
         className: 'bus_stop_chooser_stop',
@@ -120,6 +120,7 @@ var BusStopChooser = (function() {
             var popups = params.popups || false;
             var location = params.location || false;
             var zoom_threshold = params.zoom_threshold || 15;
+            var on_click_stop_callback = params.on_click_stop_callback || undefined;
             var stops_callback = params.stops_callback || undefined;
             var api_endpoint = params.api_endpoint || DEFAULT_ENDPOINT;
             var api_token = params.api_token;
@@ -130,7 +131,9 @@ var BusStopChooser = (function() {
                 maxZoom: OSM_MAX_ZOOM
             });
             var selected_stops = L.featureGroup();
-            var other_stops = L.featureGroup();
+            var other_stops = L.markerClusterGroup({
+                disableClusteringAtZoom: 18
+            });
 
             var warning_div = document.createElement('div');
             warning_div.className = 'bus_stop_chooser_warning';
@@ -242,7 +245,6 @@ var BusStopChooser = (function() {
 
             function process_pan_and_zoom(e) {
                 // Handler for pan and zoom ('moveend') events
-
                 debug_log('Processing pan and zoom, arg', e);
                 spinner_img.style.display = 'block';
                 if (map.getZoom() < zoom_threshold) {
@@ -272,7 +274,6 @@ var BusStopChooser = (function() {
                         });
                     }
                 }
-
             }
 
 
@@ -323,6 +324,7 @@ var BusStopChooser = (function() {
 
             }
 
+
             var safe_get_bus_stops = debounce(get_bus_stops, 750);
 
 
@@ -368,15 +370,13 @@ var BusStopChooser = (function() {
                         .on('click', process_stop_click);
                     if (popups) {
                         marker.bindPopup(formatted_stop_name(stop.indicator, stop.common_name));
-                    }
-                    else {
+                    } else {
                         marker.bindTooltip(formatted_stop_name(stop.indicator, stop.common_name));
                     }
                     marker.properties = { 'stop': stop };
                     if (add_selected) {
                         marker.setIcon(stop_icon_selected).addTo(selected_stops);
-                    }
-                    else {
+                    } else {
                         marker.setIcon(stop_icon).addTo(other_stops);
                     }
 
@@ -387,7 +387,7 @@ var BusStopChooser = (function() {
                 other_stops.eachLayer(function(this_marker) {
                     if (seen_stop_ids.indexOf(this_marker.properties.stop.stop_id) === -1) {
                         debug_log('Removing', this_marker.properties.stop.stop_id);
-                        other_stops.removeLayer(marker);
+                        other_stops.removeLayer(this_marker);
                     }
                 });
 
@@ -407,14 +407,12 @@ var BusStopChooser = (function() {
                         selected = true;
                     }
                 });
-                debug_log('Selected', selected);
 
-                if (selected) {
-                    deselect_stop(clicked_marker);
+                if (on_click_stop_callback) {
+                    on_click_stop_callback(clicked_marker, selected);
                 }
-                else {
-                    select_stop(clicked_marker);
-                }
+
+                select_or_deselect_stop(clicked_marker, selected);
 
                 do_stops_callback();
 
@@ -422,32 +420,24 @@ var BusStopChooser = (function() {
 
             }
 
-
-            function select_stop(marker) {
-                // First remove anything currently selected if not multi_select
-                // [*should* only ever be one, but who knows?]
-                if (!multi_select) {
-                    selected_stops.eachLayer(function(m) {
-                        deselect_stop(m);
-                    });
+            function select_or_deselect_stop(marker, selected) {
+                if (selected) {
+                    // First remove anything currently selected if not multi_select
+                    // [*should* only ever be one, but who knows?]
+                    if (!multi_select) {
+                        selected_stops.eachLayer(function(m) {
+                            deselect_stop(m);
+                        });
+                    }
+                    other_stops.removeLayer(marker);
+                    marker.addTo(selected_stops);
+                    marker.setIcon(stop_icon_selected);
+                } else {
+                    selected_stops.removeLayer(marker);
+                    marker.addTo(other_stops);
+                    marker.setIcon(stop_icon);
                 }
-                other_stops.removeLayer(marker);
-                marker.addTo(selected_stops);
-                marker.setIcon(stop_icon_selected);
-                if (popups) {
-                    //marker.openPopup();
-                }
-                debug_log('Selected', marker);
-            }
-
-            function deselect_stop(marker) {
-                selected_stops.removeLayer(marker);
-                marker.addTo(other_stops);
-                marker.setIcon(stop_icon);
-                if (popups) {
-                    //marker.openPopup();
-                }
-                debug_log('Deselected', marker);
+                debug_log(selected ? 'Selected' : 'Deselected', marker);
             }
 
             function list_selected_stops() {
