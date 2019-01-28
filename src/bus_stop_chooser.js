@@ -438,9 +438,6 @@ var BusStopChooser = (function() {
                 other_stops.removeLayer(marker);
                 marker.addTo(selected_stops);
                 marker.setIcon(stop_icon_selected);
-                if (popups) {
-                    //marker.openPopup();
-                }
                 debug_log('Selected', marker);
             }
 
@@ -449,9 +446,6 @@ var BusStopChooser = (function() {
                 selected_stops.removeLayer(marker);
                 marker.addTo(other_stops);
                 marker.setIcon(stop_icon);
-                if (popups) {
-                    //marker.openPopup();
-                }
                 debug_log('Deselected', marker);
             }
 
